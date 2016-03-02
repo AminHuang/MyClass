@@ -15,6 +15,7 @@ from 'react-native';
 
 var SearchPage = require('./SearchPage');
 import FirstPageComponent from './FirstPageComponent';
+import LoginPageComponent from './LoginComponent';
 
 class HelloWorld extends Component {
   render() {
@@ -82,4 +83,5 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('InitProject', () => InitProject);
+// AppRegistry.registerComponent('InitProject', () => InitProject);
+AppRegistry.registerComponent('InitProject', () => LoginPageComponent);
