@@ -15,7 +15,7 @@ from 'react-native';
 
 var SearchPage = require('./SearchPage');
 import FirstPageComponent from './FirstPageComponent';
-import LoginPageComponent from './LoginComponent';
+import LoginComponent from './LoginComponent';
 
 class HelloWorld extends Component {
   render() {
@@ -37,8 +37,10 @@ class HelloWorld extends Component {
 
 class InitProject extends Component {
   render() {
-    var defaultName = 'FirstPageComponent';
-    var defaultComponent = FirstPageComponent;
+    // var defaultName = 'FirstPageComponent';
+    // var defaultComponent = FirstPageComponent;
+    var defaultName = 'LoginComponent';
+    var defaultComponent = LoginComponent;
     // 注意，Navigator是覆盖整个页面的大容器，这个容器只用在根页面创建一次，然后每次一整页一整页的push
     return (
       <Navigator
@@ -83,5 +85,5 @@ const styles = StyleSheet.create({
   },
 });
 
-// AppRegistry.registerComponent('InitProject', () => InitProject);
-AppRegistry.registerComponent('InitProject', () => LoginPageComponent);
+AppRegistry.registerComponent('InitProject', () => InitProject);
+// AppRegistry.registerComponent('InitProject', () => LoginPageComponent);

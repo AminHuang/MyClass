@@ -19,8 +19,36 @@ import React,{
     TouchableOpacity
 } from 'react-native';
 
+import FirstPageComponent from './FirstPageComponent';
+import ClassInitComponent from './ClassInitComponent';
+
 
 class LoginComponent extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            username: null,
+            password: null
+        }
+    }
+    _pressButton() {
+        var _this = this;
+        const { navigator } =  this.props;
+
+        // this.setState({
+        //     username: this.username
+        // })
+
+        if(navigator) {
+            navigator.push({
+                name: 'ClassInitComponent',
+                component: ClassInitComponent,
+                params: {
+                    username: this.state.username
+                }
+            })
+        }
+    }
 
     render() {
         return (
@@ -46,7 +74,7 @@ class LoginComponent extends React.Component {
                         placeholder='password'
                         password={true} />
 
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity style={styles.btn} onPress={this._pressButton.bind(this)}>
                         <Text sytle={styles.text}>登录</Text>
                     </TouchableOpacity>
                 </View>
