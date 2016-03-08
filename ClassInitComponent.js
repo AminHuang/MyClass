@@ -2,7 +2,7 @@
 * @Author: aminhuang
 * @Date:   2016-02-15 17:59:06
 * @Last Modified by:   aminhuang
-* @Last Modified time: 2016-03-08 16:59:43
+* @Last Modified time: 2016-03-08 17:19:32
 * @Desc:
 */
 
@@ -34,7 +34,10 @@ class ClassInitComponent extends React.Component {
         this.state = {
             stu_id: null,
             class_name: "",
+            class_id: "",
             class: null,
+            loaded: false,
+            // arr_
         };
     }
 
@@ -58,12 +61,49 @@ class ClassInitComponent extends React.Component {
             console.log(this.state.stu_id);
             this.setState({class: responseData.data.class_info[0]});
             this.setState({class_name: responseData.data.class_info[0].name});
+            this.setState({class_id: responseData.data.class_info[0].class_id});
+
+            fetch(AJAX_URL, {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                },
+                body: serializeJSON({
+                    action : "get_all_activity",
+                    stu_id: responseData.data.class_info[0].class_id,
+                })
+            })
+            .then((response) => {
+                return response.json();
+            })
+            .then((responseData) => {
+                console.log(responseData);
+                console.log(this.state.stu_id);
+                this.setState({class: responseData.data.class_info[0]});
+                this.setState({class_name: responseData.data.class_info[0].name});
+
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .done();
 
         })
         .catch((error) => {
             console.log(error);
         })
         .done();
+    }
+
+
+    _renderLoadingView() {
+        return (
+            <View style={styles.container}>
+            <Text>
+                Loading ...
+            </Text>
+           </View>
+        );
     }
 
     // 组件实例挂接（初次渲染）后被调用
@@ -94,7 +134,7 @@ class ClassInitComponent extends React.Component {
     }
 
     render() {
-    return (
+        return (
             <View>
                 <Text>获得的参数： stu_id = {this.state.stu_id}</Text>
                 <Text style={styles.className}>{this.state.class_name}</Text>
@@ -103,7 +143,7 @@ class ClassInitComponent extends React.Component {
                     <Text>点我跳回去</Text>
                 </TouchableOpacity>
             </View>
-    );
+        );
     }
 }
 
