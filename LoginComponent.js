@@ -2,7 +2,7 @@
 * @Author: aminhuang
 * @Date:   2016-03-02 19:37:06
 * @Last Modified by:   aminhuang
-* @Last Modified time: 2016-03-08 16:10:32
+* @Last Modified time: 2016-03-08 16:24:16
 */
 
 'use strict';
@@ -34,10 +34,9 @@ class LoginComponent extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: null,
+            stu_id: null,
             password: null,
             error: "",
-            test: ""
         }
     }
     // 自定义方法, 异步获取方法
@@ -55,7 +54,8 @@ class LoginComponent extends React.Component {
         var _this = this;
         const { navigator } =  this.props;
 
-        if(this.state.username && this.state.password) {
+        if(this.state.stu_id && this.state.password) {
+            this.setState({error: ""});
 
             fetch(AJAX_URL, {
                 method: 'post',
@@ -64,7 +64,7 @@ class LoginComponent extends React.Component {
                 },
                 body: serializeJSON({
                     action : "login",
-                    id: this.state.username,
+                    id: this.state.stu_id,
                     pwd: this.state.password,
                 })
             })
@@ -73,13 +73,12 @@ class LoginComponent extends React.Component {
             })
             .then((responseData) => {
                 console.log(responseData);
-                this.setState({test: responseData.data.stu.name,})
                 if(navigator) {
                     navigator.push({
                         name: 'ClassInitComponent',
                         component: ClassInitComponent,
                         params: {
-                            username: this.state.username
+                            stu_id: this.state.stu_id
                         }
                     })
                 }
@@ -87,6 +86,7 @@ class LoginComponent extends React.Component {
             })
             .catch((error) => {
                 console.log(error);
+                this.setState({error: error});
             })
             .done();
         } else {
@@ -109,11 +109,11 @@ class LoginComponent extends React.Component {
                         style={styles.logo}
                     />
                     <TextInput
-                        ref={(username) => this.username = username}
-                        onChangeText = {(text) => this.setState({username: text})}
-                        onFocus={() => this.username.focus()}
+                        ref={(stu_id) => this.stu_id = stu_id}
+                        onChangeText = {(text) => this.setState({stu_id: text})}
+                        onFocus={() => this.stu_id.focus()}
                         style={styles.input}
-                        placeholder='username' />
+                        placeholder='id' />
                     <TextInput
                         ref={(password) => this.password = password}
                         onChangeText = {(text) => this.setState({password: text})}
