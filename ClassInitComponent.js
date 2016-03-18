@@ -2,7 +2,7 @@
 * @Author: aminhuang
 * @Date:   2016-02-15 17:59:06
 * @Last Modified by:   aminhuang
-* @Last Modified time: 2016-03-08 17:19:32
+* @Last Modified time: 2016-03-10 20:02:55
 * @Desc:
 */
 
@@ -16,6 +16,7 @@ import React, {
     StyleSheet,
     View,
     Text,
+    ListView,
     TouchableOpacity,
 } from 'react-native';
 
@@ -36,13 +37,16 @@ class ClassInitComponent extends React.Component {
             class_name: "",
             class_id: "",
             class: null,
-            loaded: false,
+            activityLoaded: false,
+            activity: null,
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 != row2
+            })
             // arr_
         };
     }
 
     _getClassInfo() {
-        console.log(this.state.stu_id);
         fetch(AJAX_URL, {
             method: 'post',
             headers: {
@@ -70,7 +74,7 @@ class ClassInitComponent extends React.Component {
                 },
                 body: serializeJSON({
                     action : "get_all_activity",
-                    stu_id: responseData.data.class_info[0].class_id,
+                    class_id: responseData.data.class_info[0].class_id,
                 })
             })
             .then((response) => {
@@ -78,9 +82,13 @@ class ClassInitComponent extends React.Component {
             })
             .then((responseData) => {
                 console.log(responseData);
-                console.log(this.state.stu_id);
-                this.setState({class: responseData.data.class_info[0]});
-                this.setState({class_name: responseData.data.class_info[0].name});
+
+                this.setState({activity: responseData.data.arr_activity});
+                this.setState({activityLoaded: true});
+                // this.setState({
+                //     dataSource: this.state.dataSource.cloneWithRows(responseData.data.arr_activity),
+                //     activityLoaded: true
+                // });
 
             })
             .catch((error) => {
@@ -103,6 +111,35 @@ class ClassInitComponent extends React.Component {
                 Loading ...
             </Text>
            </View>
+        );
+    }
+
+    _renderActivity(activity) {
+        return (
+            <View style={styles.container}>
+                <View style={styles.rightContainer}>
+                    <Text style={styles.name}>{activity.name}</Text>
+                    <Text style={styles.rank}>{activity.description}</Text>
+                </View>
+            </View>
+        );
+    }
+
+    _renderLoadActivity(activity) {
+        return (
+            <View style={styles.container}>
+                <Text>获得的参数： stu_id = {this.state.stu_id}</Text>
+                <Text style={styles.className}>{this.state.class_name}</Text>
+
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={this._renderActivity}
+                    style={styles.listView} />
+
+                <TouchableOpacity onPress={this._pressButton.bind(this)}>
+                    <Text>返回</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 
@@ -134,13 +171,21 @@ class ClassInitComponent extends React.Component {
     }
 
     render() {
+        if (!this.state.activityLoaded) {
+            return this._renderLoadingView();
+        }
+
+        // return _renderLoadActivity();
+
         return (
-            <View>
+            <View style={styles.container}>
                 <Text>获得的参数： stu_id = {this.state.stu_id}</Text>
                 <Text style={styles.className}>{this.state.class_name}</Text>
 
+
+
                 <TouchableOpacity onPress={this._pressButton.bind(this)}>
-                    <Text>点我跳回去</Text>
+                    <Text>返回</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -148,41 +193,44 @@ class ClassInitComponent extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  className: {
-    alignItems: 'center',
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: '#000'
-  },
-  input: {
-    height: 40,
-    marginTop: 10,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: 'lightblue'
-  },
-  text: {
-    fontWeight: 'bold',
-    fontSize: 14,
-    color: '#FFF'
-  },
-  btn: {
-    alignSelf: 'stretch', // 覆盖父样式
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#3333FF',
-    height: 40,
-    borderRadius: 5,
-    marginTop: 10
-  }
+    container: {
+        flex: 1,
+        // justifyContent: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    className: {
+        alignItems: 'center',
+        fontWeight: 'bold',
+        fontSize: 18,
+        color: '#000'
+    },
+    input: {
+        height: 40,
+        marginTop: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: 'lightblue'
+    },
+    text: {
+        fontWeight: 'bold',
+        fontSize: 14,
+        color: '#FFF'
+    },
+    btn: {
+        alignSelf: 'stretch', // 覆盖父样式
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#3333FF',
+        height: 40,
+        borderRadius: 5,
+        marginTop: 10
+    },
+    rightContainer: {
+        flex: 1,
+    },
 });
 
 export default ClassInitComponent
